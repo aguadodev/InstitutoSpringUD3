@@ -1,4 +1,4 @@
-package com.example.Instituto;
+package com.example.instituto;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class InstitutoApplication {
 
 	public static void main(String[] args) {
-		System.out.println("Hola Mundo");
-		SpringApplication.run(InstitutoApplication.class, args);		
+		SpringApplication.run(InstitutoApplication.class, args);
 	}
 
 }

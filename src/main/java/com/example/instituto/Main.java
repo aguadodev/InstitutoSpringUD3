@@ -1,81 +1,89 @@
-package com.example.Instituto;
+package com.example.instituto;
 
 import java.util.List;
 import java.util.Scanner;
 
-import com.example.Instituto.model.Alumno;
+import com.example.instituto.dao.AlumnoDao;
+import com.example.instituto.model.Alumno;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+/**
+ * Aplicación de consola con las operaciones CRUD básicas sobre Alumno
+ * usando JPA "puro" (sin Spring), configurado en META-INF/persistence.xml.
+ */
 public class Main {
 
+    private static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
+        // La EntityManagerFactory es costosa de crear: una sola para toda la aplicación.
+        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("institutoPU")) {
+            AlumnoDao dao = new AlumnoDao(emf);
 
-        // 1. Crear la fábrica de EntityManager
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("institutoPU");
+            int opcion;
+            do {
+                System.out.println("""
 
-        // 2. Crear el EntityManager
-        EntityManager em = emf.createEntityManager();
+                        ===== GESTIÓN DE ALUMNOS =====
+                        1. Listar alumnos
+                        2. Listar alumnos de un curso
+                        3. Buscar alumno por id
+                        4. Nuevo alumno
+                        5. Modificar alumno
+                        6. Borrar alumno
+                        0. Salir""");
+                opcion = leerEntero("Opción: ");
 
-        // 3. Obtener la transacción
-        EntityTransaction tx = em.getTransaction();
+                switch (opcion) {
+                    case 1 -> mostrar(dao.listarTodos());
+                    case 2 -> mostrar(dao.listarPorCurso(leerTexto("Curso: ")));
+                    case 3 -> {
+                        Alumno a = dao.buscarPorId(leerEntero("Id: "));
+                        System.out.println(a != null ? a : "No existe ningún alumno con ese id.");
+                    }
+                    case 4 -> {
+                        Alumno nuevo = new Alumno(leerTexto("Nombre: "), leerTexto("Apellidos: "), leerTexto("Curso: "));
+                        System.out.println("Alumno guardado con id " + dao.insertar(nuevo));
+                    }
+                    case 5 -> {
+                        int id = leerEntero("Id del alumno a modificar: ");
+                        boolean ok = dao.actualizar(id, leerTexto("Nuevo nombre: "),
+                                leerTexto("Nuevos apellidos: "), leerTexto("Nuevo curso: "));
+                        System.out.println(ok ? "Alumno modificado." : "No existe ningún alumno con ese id.");
+                    }
+                    case 6 -> {
+                        boolean ok = dao.borrar(leerEntero("Id del alumno a borrar: "));
+                        System.out.println(ok ? "Alumno borrado." : "No existe ningún alumno con ese id.");
+                    }
+                    case 0 -> System.out.println("¡Hasta luego!");
+                    default -> System.out.println("Opción no válida.");
+                }
+            } while (opcion != 0);
+        }
+    }
 
-        try {
-            Scanner sc = new Scanner(System.in);
-            
-            // 4. Iniciar la transacción
-            tx.begin();
-            /*
-            // 5. Crear un objeto Alumno
-            
-            System.out.println("Nuevo Alumno");
-            System.out.print("Nombre: ");
-            String nombre = sc.nextLine();
-            System.out.print("apellido: ");
-            String apellido = sc.nextLine();
-
-            Alumno alumno = new Alumno(nombre, apellido);
-
-            // 6. Persistir el objeto
-            em.persist(alumno);
-
-
-
-            System.out.println("Alumnos guardados correctamente.");
-            // System.out.println("IDs asignados: " + alumno.getId());
-            */
-
-            System.out.println("Alumnos actuales:");
-            List<Alumno> alumnos = em.createQuery("SELECT a FROM Alumno a", Alumno.class).getResultList();
+    private static void mostrar(List<Alumno> alumnos) {
+        if (alumnos.isEmpty()) {
+            System.out.println("No hay alumnos.");
+        } else {
             alumnos.forEach(System.out::println);
+        }
+    }
 
-            System.out.print("Id Alumno a Borrar: ");
-            int id = sc.nextInt();
+    private static String leerTexto(String mensaje) {
+        System.out.print(mensaje);
+        return sc.nextLine().trim();
+    }
 
-            Alumno alumno2 = em.find(Alumno.class, id);
-            System.out.println(alumno2);
-            em.remove(alumno2);
-            em.flush();
-            // 7. Confirmar la transacción
-            tx.commit();
-            sc.close();
-        } catch (Exception e) {
-
-            // 8. Deshacer los cambios si hay algún error
-            if (tx.isActive()) {
-                tx.rollback();
+    private static int leerEntero(String mensaje) {
+        while (true) {
+            try {
+                return Integer.parseInt(leerTexto(mensaje));
+            } catch (NumberFormatException e) {
+                System.out.println("Introduce un número entero.");
             }
-
-            e.printStackTrace();
-
-        } finally {
-
-            // 9. Cerrar los recursos
-            em.close();
-            emf.close();
         }
     }
 }

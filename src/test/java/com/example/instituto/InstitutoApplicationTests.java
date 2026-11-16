@@ -1,4 +1,4 @@
-package com.example.Instituto;
+package com.example.instituto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

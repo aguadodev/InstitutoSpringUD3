@@ -1,45 +1,36 @@
-package com.example.Instituto.model;
+package com.example.instituto.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+/**
+ * Entidad JPA: cada objeto Alumno se corresponde con una fila de la tabla "Alumno".
+ */
 @Entity
 public class Alumno {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String nombre;
-    String apellidos;
-    String curso;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // la BD genera el id (autoincremento)
+    private Integer id;
+
+    private String nombre;
+    private String apellidos;
+    private String curso;
+
+    /** Constructor vacío obligatorio para JPA. */
     public Alumno() {
     }
 
-
-    public Alumno(int id) {
-        this.id = id;
-    }
-
-
-    public Alumno(String nombre, String apellidos) {
+    public Alumno(String nombre, String apellidos, String curso) {
         this.nombre = nombre;
-        apellidos = apellidos;
+        this.apellidos = apellidos;
+        this.curso = curso;
     }
 
-    public Alumno(int id, String nombre, String apellidos) {
-        this.id = id;
-        this.nombre = nombre;
-        apellidos = apellidos;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNombre() {
@@ -55,7 +46,7 @@ public class Alumno {
     }
 
     public void setApellidos(String apellidos) {
-        apellidos = apellidos;
+        this.apellidos = apellidos;
     }
 
     public String getCurso() {
@@ -68,7 +59,6 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return "Alumno [id=" + id + ", nombre=" + nombre + ", Apellidos=" + apellidos + ", curso=" + curso + "]";
+        return "Alumno [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", curso=" + curso + "]";
     }
-
 }
