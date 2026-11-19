@@ -64,6 +64,25 @@ public class AlumnoDao {
         }
     }
 
+    /** READ: consulta JPQL con parámetro con nombre. */
+    public List<Alumno> listarNombreContiene(String texto) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT a FROM Alumno a WHERE a.nombre LIKE :nombre ORDER BY a.nombre", Alumno.class)
+                     .setParameter("nombre", "%" + texto + "%")
+                     .getResultList();
+        }
+    }
+
+    /** READ: consulta JPQL que obtenga cuántos alumnos hay en cada curso */
+    public List<AlumnosPorCursoDTO> alumnosPorCurso() {
+        String consultaJPQL = "SELECT NEW com.example.instituto.dao.AlumnosPorCursoDTO(a.curso, COUNT(a)) FROM Alumno a GROUP BY a.curso";
+        
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(consultaJPQL, AlumnosPorCursoDTO.class)
+                     .getResultList();
+        }
+    }    
+
     /**
      * UPDATE: modifica los datos de un alumno existente.
      * Basta con cambiar el objeto gestionado (obtenido con find) dentro de la

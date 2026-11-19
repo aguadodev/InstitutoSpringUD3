@@ -9,6 +9,7 @@
 
         <!-- Entidades gestionadas -->
         <class>com.example.instituto.model.Alumno</class>
+        <class>com.example.instituto.model.Modulo</class>
 
         <properties>
             <!-- Conexión (propiedades estándar JPA) -->

@@ -17,7 +17,9 @@ public class Alumno {
 
     private String nombre;
     private String apellidos;
+    private String email;
     private String curso;
+
 
     /** Constructor vacío obligatorio para JPA. */
     public Alumno() {
@@ -55,6 +57,14 @@ public class Alumno {
 
     public void setCurso(String curso) {
         this.curso = curso;
+    } 
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

@@ -29,6 +29,8 @@ public class Main {
                         ===== GESTIÓN DE ALUMNOS =====
                         1. Listar alumnos
                         2. Listar alumnos de un curso
+                        22. Listar por nombre contiene "Texto"
+                        23. Alumnos por Curso
                         3. Buscar alumno por id
                         4. Nuevo alumno
                         5. Modificar alumno
@@ -39,6 +41,8 @@ public class Main {
                 switch (opcion) {
                     case 1 -> mostrar(dao.listarTodos());
                     case 2 -> mostrar(dao.listarPorCurso(leerTexto("Curso: ")));
+                    case 22 -> mostrar(dao.listarNombreContiene(leerTexto("Texto: ")));
+                    case 23 -> dao.alumnosPorCurso().forEach(System.out::println);
                     case 3 -> {
                         Alumno a = dao.buscarPorId(leerEntero("Id: "));
                         System.out.println(a != null ? a : "No existe ningún alumno con ese id.");
